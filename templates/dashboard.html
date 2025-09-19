@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Sistema de Estoque{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
+    <!-- Total de Medicamentos -->
+    <div class="card hover-lift">
+        <div class="card-body">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-pills text-3xl text-primary"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Total de Medicamentos
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">
+                            {{ total_medicamentos }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total de UBSs -->
+    <div class="card hover-lift">
+        <div class="card-body">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-hospital text-3xl text-primary"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Total de UBSs
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">
+                            {{ total_ubs }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lotes Ativos -->
+    <div class="card hover-lift">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-boxes text-3xl text-primary"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Lotes Ativos
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">
+                            {{ total_lotes }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medicamentos Vencendo -->
+    <div class="card hover-lift">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-3xl text-primary"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Vencendo em 30 dias
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">
+                            {{ medicamentos_vencendo }}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Estoque Crítico -->
+    <div class="card">
+        <div class="card-header border-b border-light">
+            <h3 class="text-lg font-medium text-secondary">
+                <i class="fas fa-exclamation-circle text-primary mr-2"></i>
+                Estoque Crítico
+            </h3>
+        </div>
+        <div class="p-6 fade-in">
+            {% if estoque_critico %}
+                <div class="space-y-4">
+                    {% for item in estoque_critico %}
+                        <div class="flex items-center justify-between p-3 bg-light border-left-primary rounded-lg hover-lift">
+                            <div>
+                                <p class="font-medium text-secondary">{{ item.medicamento }}</p>
+                                <p class="text-sm text-secondary opacity-80">{{ item.ubs }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-medium text-primary">
+                                    {{ item.quantidade_atual }} / {{ item.quantidade_minima }}
+                                </p>
+                                <p class="text-xs text-secondary opacity-60">unidades</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 fade-in">
+                    <i class="fas fa-check-circle text-primary text-4xl mb-4"></i>
+                    <p class="text-secondary opacity-80">Nenhum medicamento em estoque crítico</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Movimentações Recentes -->
+    <div class="card">
+        <div class="card-header border-b border-light">
+            <h3 class="text-lg font-medium text-secondary">
+                <i class="fas fa-history text-primary mr-2"></i>
+                Movimentações Recentes
+            </h3>
+        </div>
+        <div class="p-6 fade-in">
+            {% if movimentacoes_recentes %}
+                <div class="space-y-4">
+                    {% for mov in movimentacoes_recentes %}
+                        <div class="flex items-center justify-between py-2 border-b border-light last:border-b-0 hover-lift">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    {% if mov.tipo == 'entrada' %}
+                                        <i class="fas fa-plus-circle text-primary"></i>
+                                    {% elif mov.tipo == 'saida' %}
+                                        <i class="fas fa-minus-circle text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-exchange-alt text-primary"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-secondary">
+                                        {{ mov.medicamento.nome_completo }}
+                                    </p>
+                                    <p class="text-xs text-secondary opacity-80">
+                                        {{ mov.get_tipo_display }} - {{ mov.quantidade }} unidades
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-secondary opacity-80">
+                                    {{ mov.data_movimentacao|date:"d/m/Y H:i" }}
+                                </p>
+                                <p class="text-xs text-secondary opacity-60">
+                                    {{ mov.usuario.get_full_name|default:mov.usuario.username }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 fade-in">
+                    <i class="fas fa-inbox text-primary opacity-60 text-4xl mb-4"></i>
+                    <p class="text-secondary opacity-80">Nenhuma movimentação recente</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Gráficos -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Gráfico de Estoque por UBS -->
+    <div class="card hover-lift">
+        <div class="card-header border-b border-light">
+            <h3 class="text-lg font-medium text-secondary">
+                <i class="fas fa-chart-pie text-primary mr-2"></i>
+                Estoque por UBS
+            </h3>
+        </div>
+        <div class="p-6 fade-in">
+            <canvas id="estoqueUbsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de Movimentações Mensais -->
+    <div class="card hover-lift">
+        <div class="card-header border-b border-light">
+            <h3 class="text-lg font-medium text-secondary">
+                <i class="fas fa-chart-line text-primary mr-2"></i>
+                Movimentações do Mês
+            </h3>
+        </div>
+        <div class="p-6 fade-in">
+            <canvas id="movimentacoesChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Gráfico de Estoque por UBS
+    const ctx1 = document.getElementById('estoqueUbsChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+            labels: ['UBS Centro', 'UBS Norte', 'UBS Sul'],
+            datasets: [{
+                data: [{{ total_medicamentos_estoque|default:0 }}, 150, 200],
+                backgroundColor: [
+                    '#0F5257',
+                    '#0D2149',
+                    '#DDDBCB'
+                ],
+                borderWidth: 2,
+                borderColor: '#FFFFFF'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Gráfico de Movimentações
+    const ctx2 = document.getElementById('movimentacoesChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+            datasets: [{
+                label: 'Entradas',
+                data: [12, 19, 8, 15],
+                borderColor: '#0F5257',
+                backgroundColor: 'rgba(15, 82, 87, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Saídas',
+                data: [8, 15, 12, 18],
+                borderColor: '#0D2149',
+                backgroundColor: 'rgba(13, 33, 73, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

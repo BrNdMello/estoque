@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Estoque de Medicamentos{% endblock %}</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <style>
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .content-transition {
+            transition: margin-left 0.3s ease-in-out;
+        }
+        
+        .sidebar-hidden {
+            margin-left: -250px;
+        }
+        
+        .content-expanded {
+            margin-left: 0;
+        }
+        
+        .sidebar-visible {
+            margin-left: 0;
+        }
+        
+        .content-collapsed {
+            margin-left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar-hidden {
+                margin-left: -250px;
+            }
+            
+            .content-expanded {
+                margin-left: 0;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-light">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-secondary text-white sidebar-transition">
+        <div class="flex items-center justify-center h-16 bg-primary">
+            <h1 class="text-xl font-bold fade-in">
+                <i class="fas fa-pills mr-2"></i>
+                Estoque UBS
+            </h1>
+        </div>
+        
+        <nav class="mt-8">
+            <div class="px-4 space-y-2">
+                <a href="{% url 'dashboard' %}" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Ir para o Dashboard"
+                   aria-label="Ir para o Dashboard">
+                    <i class="fas fa-tachometer-alt mr-3" aria-hidden="true"></i>
+                    Dashboard
+                </a>
+                
+                <a href="/medicamentos/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Gerenciar medicamentos"
+                   aria-label="Gerenciar medicamentos">
+                    <i class="fas fa-pills mr-3" aria-hidden="true"></i>
+                    Medicamentos
+                </a>
+                
+                <a href="/ubs/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Gerenciar UBSs"
+                   aria-label="Gerenciar Unidades Básicas de Saúde">
+                    <i class="fas fa-hospital mr-3" aria-hidden="true"></i>
+                    UBSs
+                </a>
+                
+                <a href="/estoque/atual/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Visualizar estoque atual"
+                   aria-label="Visualizar estoque atual">
+                    <i class="fas fa-boxes mr-3" aria-hidden="true"></i>
+                    Estoque
+                </a>
+                
+                <a href="/estoque/entrada/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Registrar entrada de estoque"
+                   aria-label="Registrar entrada de estoque">
+                    <i class="fas fa-plus-circle mr-3" aria-hidden="true"></i>
+                    Entrada
+                </a>
+                
+                <a href="/estoque/saida/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Registrar saída de estoque"
+                   aria-label="Registrar saída de estoque">
+                    <i class="fas fa-minus-circle mr-3" aria-hidden="true"></i>
+                    Saída
+                </a>
+                
+                <a href="/relatorios/" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Visualizar relatórios"
+                   aria-label="Visualizar relatórios do sistema">
+                    <i class="fas fa-chart-bar mr-3" aria-hidden="true"></i>
+                    Relatórios
+                </a>
+                
+                {% if user.is_admin %}
+                <a href="{% url 'admin:index' %}" 
+                   class="flex items-center px-4 py-2 text-white hover:bg-primary hover-lift rounded-lg transition-colors"
+                   title="Painel administrativo"
+                   aria-label="Acessar painel administrativo">
+                    <i class="fas fa-cog mr-3" aria-hidden="true"></i>
+                    Administração
+                </a>
+                {% endif %}
+            </div>
+        </nav>
+        
+        <!-- User info -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-primary">
+            <div class="flex items-center hover-lift">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-white">
+                        {{ user.get_full_name|default:user.username }}
+                    </p>
+                    <p class="text-xs text-white opacity-80">
+                        {{ user.get_nivel_acesso_display }}
+                    </p>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" 
+               class="block mt-2 text-xs text-white opacity-80 hover:opacity-100 hover-lift"
+               title="Fazer logout do sistema"
+               aria-label="Fazer logout do sistema">
+                <i class="fas fa-sign-out-alt mr-1" aria-hidden="true"></i>
+                Sair
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main content -->
+    <div id="main-content" class="content-transition content-collapsed">
+        <!-- Top bar -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center">
+                    <button id="sidebar-toggle" 
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700"
+                            title="Alternar menu lateral"
+                            aria-label="Alternar menu lateral">
+                        <i class="fas fa-bars text-xl" aria-hidden="true"></i>
+                    </button>
+                    <h2 class="ml-4 text-2xl font-semibold text-gray-800">
+                        {% block page_title %}Dashboard{% endblock %}
+                    </h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <button class="relative text-gray-500 hover:text-gray-700 focus:outline-none"
+                            title="Notificações"
+                            aria-label="Notificações (3 novas)">
+                        <i class="fas fa-bell text-xl" aria-hidden="true"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                              aria-label="3 notificações não lidas">
+                            3
+                        </span>
+                    </button>
+                    
+                    <!-- User menu -->
+                    <div class="relative">
+                        <button class="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                title="Menu do usuário"
+                                aria-label="Menu do usuário {{ user.get_full_name|default:user.username }}">
+                            <i class="fas fa-user-circle text-xl mr-2" aria-hidden="true"></i>
+                            <span class="hidden md:block">{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-sm" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Page content -->
+        <main class="p-6">
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% else %}alert-default{% endif %} slideInDown">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="fade-in">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            if (sidebar.classList.contains('sidebar-hidden')) {
+                sidebar.classList.remove('sidebar-hidden');
+                sidebar.classList.add('sidebar-visible');
+                mainContent.classList.remove('content-expanded');
+                mainContent.classList.add('content-collapsed');
+            } else {
+                sidebar.classList.add('sidebar-hidden');
+                sidebar.classList.remove('sidebar-visible');
+                mainContent.classList.add('content-expanded');
+                mainContent.classList.remove('content-collapsed');
+            }
+        });
+        
+        // Auto-hide sidebar on mobile
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.add('sidebar-hidden');
+            document.getElementById('main-content').classList.add('content-expanded');
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('sidebar-hidden');
+                document.getElementById('main-content').classList.add('content-expanded');
+            } else {
+                document.getElementById('sidebar').classList.remove('sidebar-hidden');
+                document.getElementById('main-content').classList.remove('content-expanded');
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

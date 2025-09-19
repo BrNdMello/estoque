@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}UBSs - Sistema de Estoque{% endblock %}
+
+{% block page_title %}Unidades Básicas de Saúde{% endblock %}
+
+{% block content %}
+<div class="mb-6 fade-in">
+    <div class="flex justify-between items-center">
+        <div>
+            <h3 class="text-lg font-medium text-secondary">Lista de UBSs</h3>
+            <p class="text-sm text-secondary opacity-80">Gerencie as Unidades Básicas de Saúde</p>
+        </div>
+        <button class="btn-primary hover-lift flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Nova UBS
+        </button>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-6 fade-in">
+    <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">Buscar</label>
+                <input type="text" placeholder="Nome da UBS ou cidade..." 
+                       class="form-control">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">Estado</label>
+                <select class="form-control">
+                    <option value="">Todos os estados</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="MG">Minas Gerais</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">Status</label>
+                <select class="form-control">
+                    <option value="">Todas</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button class="w-full btn-secondary hover-lift">
+                    <i class="fas fa-search mr-2"></i>
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de UBSs -->
+<div class="card overflow-hidden fade-in">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-light">
+            <thead class="bg-light">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        UBS
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        Endereço
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        Responsável
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        Contato
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-secondary opacity-80 uppercase tracking-wider">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-light">
+                <!-- Exemplo de dados -->
+                <tr class="hover-light">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-hospital text-2xl text-primary"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-secondary">UBS Centro</div>
+                                <div class="text-sm text-secondary opacity-80">São Paulo/SP</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-secondary">Rua das Flores, 123</div>
+                        <div class="text-sm text-secondary opacity-80">CEP: 01234-567</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        Administrador Sistema
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div>(11) 1234-5678</div>
+                        <div>centro@ubs.com.br</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Ativo
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-hospital text-2xl text-green-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">UBS Norte</div>
+                                <div class="text-sm text-gray-500">São Paulo/SP</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">Av. Paulista, 456</div>
+                        <div class="text-sm text-gray-500">CEP: 01234-890</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        João Silva
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div>(11) 2345-6789</div>
+                        <div>norte@ubs.com.br</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Ativo
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-hospital text-2xl text-yellow-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">UBS Sul</div>
+                                <div class="text-sm text-gray-500">São Paulo/SP</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">Rua da Saúde, 789</div>
+                        <div class="text-sm text-gray-500">CEP: 01234-123</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        Administrador Sistema
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div>(11) 3456-7890</div>
+                        <div>sul@ubs.com.br</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Ativo
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Paginação -->
+    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Anterior
+            </a>
+            <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Próximo
+            </a>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Mostrando <span class="font-medium">1</span> a <span class="font-medium">3</span> de <span class="font-medium">3</span> resultados
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

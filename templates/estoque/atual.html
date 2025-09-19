@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block title %}Estoque Atual - Sistema de Estoque{% endblock %}
+
+{% block page_title %}Estoque Atual{% endblock %}
+
+{% block content %}
+<div class="mb-6 fade-in">
+    <div class="flex justify-between items-center">
+        <div>
+            <h3 class="text-lg font-medium text-secondary">Estoque Atual</h3>
+            <p class="text-sm text-secondary opacity-80">Visualize o estoque atual por UBS e medicamento</p>
+        </div>
+        <div class="flex space-x-3">
+            <button class="btn-success hover-lift flex items-center">
+                <i class="fas fa-plus mr-2"></i>
+                Entrada
+            </button>
+            <button class="btn-danger hover-lift flex items-center">
+                <i class="fas fa-minus mr-2"></i>
+                Saída
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-6 fade-in">
+    <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">UBS</label>
+                <select class="form-control">
+                    <option value="">Todas as UBSs</option>
+                    <option value="1">UBS Centro</option>
+                    <option value="2">UBS Norte</option>
+                    <option value="3">UBS Sul</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">Medicamento</label>
+                <input type="text" placeholder="Nome do medicamento..." 
+                       class="form-control">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-secondary mb-2">Status</label>
+                <select class="form-control">
+                    <option value="">Todos</option>
+                    <option value="disponivel">Disponível</option>
+                    <option value="critico">Crítico</option>
+                    <option value="vencendo">Vencendo</option>
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button class="w-full btn-secondary hover-lift">
+                    <i class="fas fa-search mr-2"></i>
+                    Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cards de Resumo -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+    <div class="card hover-lift">
+        <div class="card-body">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-boxes text-3xl text-primary"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Total de Lotes
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">15</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card hover-lift">
+        <div class="card-body">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-3xl text-danger"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-secondary opacity-80 truncate">
+                            Estoque Crítico
+                        </dt>
+                        <dd class="text-lg font-medium text-secondary">3</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-clock text-3xl text-yellow-600"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">
+                            Vencendo em 30 dias
+                        </dt>
+                        <dd class="text-lg font-medium text-gray-900">2</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="p-5">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-3xl text-green-600"></i>
+                </div>
+                <div class="ml-5 w-0 flex-1">
+                    <dl>
+                        <dt class="text-sm font-medium text-gray-500 truncate">
+                            Em Dia
+                        </dt>
+                        <dd class="text-lg font-medium text-gray-900">10</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Estoque -->
+<div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Medicamento
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        UBS
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Lote
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Validade
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Quantidade
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ações
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Exemplo de dados -->
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-pills text-2xl text-blue-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">Amoxicilina 500mg</div>
+                                <div class="text-sm text-gray-500">Antibióticos</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        UBS Centro
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        LOTE-1-1-001
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        10/09/2026
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="flex items-center">
+                            <span class="text-lg font-semibold">100</span>
+                            <span class="ml-1 text-sm text-gray-500">unidades</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Normal
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-pills text-2xl text-green-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">Dipirona 500mg</div>
+                                <div class="text-sm text-gray-500">Analgésicos</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        UBS Norte
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        LOTE-2-2-001
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        15/08/2026
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="flex items-center">
+                            <span class="text-lg font-semibold">50</span>
+                            <span class="ml-1 text-sm text-gray-500">unidades</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Atenção
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <i class="fas fa-pills text-2xl text-red-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">Ibuprofeno 400mg</div>
+                                <div class="text-sm text-gray-500">Anti-inflamatórios</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        UBS Sul
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        LOTE-3-3-001
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        20/10/2025
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="flex items-center">
+                            <span class="text-lg font-semibold">5</span>
+                            <span class="ml-1 text-sm text-gray-500">unidades</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Crítico
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-green-600 hover:text-green-900">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Paginação -->
+    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Anterior
+            </a>
+            <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Próximo
+            </a>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Mostrando <span class="font-medium">1</span> a <span class="font-medium">15</span> de <span class="font-medium">15</span> resultados
+                </p>
+            </div>
+            <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        1
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
